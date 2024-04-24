@@ -5,6 +5,7 @@ import { Button, Link } from "@nextui-org/react"
 import { useLazyCurrentQuery, useLoginMutation } from "../app/services/userApi"
 import { useNavigate } from "react-router-dom"
 import { ErrorMessage } from "../components/error"
+import { hasErrorField } from "../utils/has-error-field"
 
 type Login = {
     email: string
@@ -15,38 +16,38 @@ type Props = {
     setSelected: (value: string) => void
 }
 
-export const Login: React.FC<Props> = ({ setSelected }) => {
+export const Login = ({ setSelected }: Props) => {
     const {
         handleSubmit,
         control,
-        formState: { errors }
+        formState: { errors },
     } = useForm<Login>({
-        mode: 'onChange',
-        reValidateMode: 'onBlur',
+        mode: "onChange",
+        reValidateMode: "onBlur",
         defaultValues: {
-            email: '',
-            password: ''
-        }
+            email: "",
+            password: "",
+        },
     })
 
     const [login, { isLoading }] = useLoginMutation()
     const navigate = useNavigate()
-    const [error, setError] = useState('')
-    const [triggerCurrentCuery] = useLazyCurrentQuery()
+    const [error, setError] = useState("")
+    const [triggerCurrentQuery] = useLazyCurrentQuery()
 
     const onSubmit = async (data: Login) => {
         try {
             await login(data).unwrap()
-        } catch (error) {
-
+            await triggerCurrentQuery()
+            navigate("/")
+        } catch (err) {
+            if (hasErrorField(err)) {
+                setError(err.data.error)
+            }
         }
     }
-
     return (
-        <form
-            className="flex flex-col gap-4"
-            onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
             <Input
                 control={control}
                 name="email"
@@ -61,24 +62,19 @@ export const Login: React.FC<Props> = ({ setSelected }) => {
                 type="password"
                 required="Обязательное поле"
             />
-            <ErrorMessage />
+            <ErrorMessage error={error} />
             <p className="text-center text-small">
-                Нет аккаунта{' '}
+                Нет аккаутна?{" "}
                 <Link
                     size="sm"
                     className="cursor-pointer"
-                    onPress={() => setSelected('sign-up')}
+                    onPress={() => setSelected("sign-up")}
                 >
-                    Зарегестрироваться
+                    Зарегистрируйтесь
                 </Link>
             </p>
             <div className="flex gap-2 justify-end">
-                <Button
-                    fullWidth
-                    color="primary"
-                    type="submit"
-                    isLoading={isLoading}
-                >
+                <Button fullWidth color="primary" type="submit" isLoading={isLoading}>
                     Войти
                 </Button>
             </div>

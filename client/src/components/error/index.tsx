@@ -3,5 +3,5 @@ export const ErrorMessage = ({
 }: {
     error: string
 }) => {
-    return error && <p className="text-red-500 mt-2 mb-5 text-small"></p>
+    return error && <p className="text-red-500 mt-2 mb-5 text-small">{error}</p>
 }

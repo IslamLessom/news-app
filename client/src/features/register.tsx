@@ -71,7 +71,7 @@ export const Register: React.FC<Props> = ({ setSelected }) => {
                 type="password"
                 required="Обязательное поле"
             />
-            <ErrorMessage />
+            <ErrorMessage error={error} />
             <p className="text-center text-small">
                 Уже есть аккаунт{' '}
                 <Link
@@ -89,7 +89,7 @@ export const Register: React.FC<Props> = ({ setSelected }) => {
                     type="submit"
                     isLoading={isLoading}
                 >
-                    Войти
+                    Зарегестрироваться
                 </Button>
             </div>
         </form>

@@ -1,4 +1,6 @@
-export function hasErrorField (err: unknown): err is { date: { error: string }} {
+export function hasErrorField (err: unknown): err is {
+    data: any; date: { error: string }
+} {
     return (
         typeof err === 'object' &&
         err !== null &&
